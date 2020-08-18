@@ -1,0 +1,38 @@
+version: '3'
+services:
+  # app container
+  api:
+    build: .
+    ports:
+      - 8080:8080
+    restart: on-failure
+    volumes:
+      - app:/usr/src/app
+    depends_on:
+      - db
+    networks:
+      - appnet
+  # db container
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}  
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - 5432:5555
+    volumes:
+      - dbvol:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+# container volumes
+volumes:
+  app:
+  dbvol:
+
+# network to communicate between containers
+networks:
+  appnet:
+    driver: bridge
+
